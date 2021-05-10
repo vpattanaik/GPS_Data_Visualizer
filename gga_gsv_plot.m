@@ -5,14 +5,13 @@
 % tracked satellites. The results are plotted on SKYPLOT. 
 
 %% Clears session
-close all;
-clear;
-clc;
+close all
+clear
+clc
 format long g
-
 %% Loads GGA data from input file
 
-fileName = 'sampleData/270321_1647-1749_6850_waason.txt';
+fileName = '080521_13201-13402_6848.txt';
 
 ReadID = fopen(fileName,'r'); % Opens file for reading
 WAA = fopen('GPGGA_holder.txt','w'); % Creates a new file for writing
@@ -103,22 +102,23 @@ while usrUTC ~= 0  % Runs until user enters ZERO
             
             % Find GSV data points for given time      
             for i = 1:length(idxGPGSV)
+                
                 GSV_data = ...
                     textscan(string(selInputTextData(idxGPGSV(i))), ...
                      '$GPGSV %d %d %d %d %d %d %d %d %d %d %d %d %d %d %d %d %d %d %d %s', ...
                      'Delimiter', ',');
                               
                 % Checks satellite count in each GSV line
-                if isempty(GSV_data{16})
-                    sDperLine = 3;
+                if isempty(GSV_data{8})
+                    sDperLine = 1;
                 elseif isempty(GSV_data{12})
                     sDperLine = 2;
-                elseif isempty(GSV_data{8})
-                    sDperLine = 1;
+                elseif isempty(GSV_data{16})
+                    sDperLine = 3;
                 else
                     sDperLine = 4;
                 end
-                
+                              
                 for j = 1:sDperLine
                     sC = sC + 1;
                     satData(sC, 1) = GSV_data{4 * j};
@@ -147,8 +147,3 @@ while usrUTC ~= 0  % Runs until user enters ZERO
         disp('Good bye!');
     end
 end
-
-
-
-
-
