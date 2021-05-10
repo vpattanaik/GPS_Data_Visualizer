@@ -11,7 +11,7 @@ clc
 format long g
 %% Loads GGA data from input file
 
-fileName = 'sampleData/270321_1647-1749_6850_waason.txt';
+fileName = '270321_1647-1749_6850_waason.txt';
 
 ReadID = fopen(fileName,'r'); % Opens file for reading
 WAA = fopen('GPGGA_holder.txt','w'); % Creates a new file for writing
@@ -127,21 +127,31 @@ while usrUTC ~= 0  % Runs until user enters ZERO
                 end
             end
             
+            % Select unique satData by row
             satData = unique(satData, 'rows');
             satData( satData(:, 1) == 0, : ) = [];
             
+            % Displays satData
             disp('satData  --> SatID  Elev  Azth');
             satData
 
+            % Classifies GPA and WAAS satellites
             isWAAS = (satData(:, 1) > 32); 
             constellationGroup = categorical(isWAAS, [false, true], {'GPS', 'WAAS'}); 
 
+            % Plot satellite positions
             figure
             skyplot(satData(:, 3), satData(:, 2), satData(:, 1), ...
                 'GroupData',constellationGroup, ...
-                'LabelFontSize', 10); % Requires the "Navigation Toolbox"
+                'LabelFontSize', 10); % Requires MATLAB2021a and the "Navigation Toolbox"
             legend('GPS', 'WAAS')
             legend('Location', 'northeastoutside')
+
+            % Alternatively, if using an older version of MATLAB (2020b or older)
+            % Comment LINES 140 - 144, and uncomment LINES 152 - 154
+
+%             polarplot(satData(:, 2), rad2deg(satData(:, 1)), 'o', ...
+%                 'MarkerSize', 10, 'MarkerFaceColor', 'r');
         end
     else % If user entered ZERO exits program
         disp('Good bye!');
