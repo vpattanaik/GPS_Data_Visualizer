@@ -11,7 +11,7 @@ clc
 format long g
 %% Loads GGA data from input file
 
-fileName = '270321_1647-1749_6850_waason.txt';
+fileName = 'sampleData\270321_1647-1749_6850_waason.txt';
 
 ReadID = fopen(fileName,'r'); % Opens file for reading
 WAA = fopen('GPGGA_holder.txt','w'); % Creates a new file for writing
