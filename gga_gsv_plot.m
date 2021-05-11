@@ -11,7 +11,7 @@ clc
 format long g
 %% Loads GGA data from input file
 
-fileName = 'sampleData\07052021_1650-1709_6814.txt';
+fileName = 'sampleData\110521_10481106_6829.txt';
 
 ReadID = fopen(fileName,'r'); % Opens file for reading
 WAA = fopen('GPGGA_holder.txt','w'); % Creates a new file for writing
@@ -82,8 +82,16 @@ while usrUTC ~= 0  % Runs until user enters ZERO
             disp(newline);
             
             % Creates text with UTC to search in input data
-            txtLineStart = strcat('$GPGGA,', int2str(usrUTC));
-            txtLineEnd = strcat('$GPGGA,', int2str(usrUTC + 1));
+            if numel(num2str(usrUTC)) == 3 % Checks if input UTC is 3 digit
+                uuT = insertBefore(int2str(usrUTC), 1, '0');
+                txtLineStart = strcat('$GPGGA,', uuT);
+                
+                uuT = insertBefore(int2str(usrUTC + 1), 1, '0');
+                txtLineEnd = strcat('$GPGGA,', uuT);
+            else
+                txtLineStart = strcat('$GPGGA,', int2str(usrUTC));
+                txtLineEnd = strcat('$GPGGA,', int2str(usrUTC + 1));
+            end
 
             % Extracts all lines into string array
             inputTextData = regexp(fileread(fileName), '\n', 'split');
