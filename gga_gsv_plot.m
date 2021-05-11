@@ -11,7 +11,7 @@ clc
 format long g
 %% Loads GGA data from input file
 
-fileName = 'sampleData\270321_1647-1749_6850_waason.txt';
+fileName = 'sampleData\07052021_1650-1709_6814.txt';
 
 ReadID = fopen(fileName,'r'); % Opens file for reading
 WAA = fopen('GPGGA_holder.txt','w'); % Creates a new file for writing
@@ -30,8 +30,25 @@ fclose('all'); % Closes all open files
 % Reads data (in predefined format) from text file and saves it into variables
 format long g
 
-[GGA_UTC, GGA_Lat, GGA_Long, GGA_Q, GGA_NumSat, GGA_HDOP, GGA_H_geoid, GGA_Sep, GGA_end] =...
-    textread('GPGGA_holder.txt', '$GPGGA,%d,%f,N,%f,E,%d,%d,%f,%f,M,%f,M,%s');
+fId = fopen('GPGGA_holder.txt');
+
+gpggaFrmt = ['%s' repmat('%s', [1 14])];
+
+% Extracts UTC data from GPGGA file
+gpggaRawData = textscan(fId, gpggaFrmt, 'Delimiter', ',', 'EmptyValue', Inf);
+
+fclose(fId);
+
+gpggaData = [gpggaRawData{2} gpggaRawData{8} gpggaRawData{9}];
+
+% Removes all rows with missing values
+emptyMat = cellfun('isempty', gpggaData);
+gpggaData(any(emptyMat(:, :), 2), :) = [];
+
+% Saves GPGGA data into new variables
+GGA_UTC = str2double(gpggaData(:, 1));
+GGA_NumSat = str2double(gpggaData(:, 2));
+GGA_HDOP = str2double(gpggaData(:, 3));
 
 %% Plotting GSV Data and Values
 
